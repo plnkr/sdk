@@ -5,16 +5,15 @@
     "main": "dist/index.js",
     "module": "dist/index.esm.js",
     "types": "./dist/index.d.ts",
-    "files": [
-        "dist"
-    ],
+    "files": ["dist"],
     "scripts": {
         "build-declarations": "tsc -d",
         "build": "npm run build-declarations && rollup -c",
         "test": "echo 'Tests coming soon to a galaxy near you'",
         "prebuild": "rm -rf ./dist/*",
         "pretest": "npm run build",
-        "preversion": "npm run test"
+        "preversion": "npm run test",
+        "version": "git add dist"
     },
     "repository": {
         "type": "git",
