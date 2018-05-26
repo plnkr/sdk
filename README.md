@@ -64,6 +64,25 @@ showDynamicEmbed(
 
 ## API
 
+### `showDynamicEditor(projectSpec, options)`
+
+Create an embedded Plunk whose content is dynamically generated and either mount it to a DOM element or open it in a new or existing iframe / window where:
+
+*   `projectSpec` - An object having the following properties:
+    *   `files` - An array of objects having the following properties:
+        *   `pathname` - The full path of the file.
+        *   `content` - The file's content.
+        *   `encoding` - (optional) The format in which the content is encoded (utf8 / base64).
+    *   `title` - (optional) The suggested title for the Plunk.
+    *   `tags` - (optional) An array of suggested string tags for the Plunk.
+*   `options` - (optional) An object having the following properties:
+    *   `editorUrl` - (optional) The string url of the instance of the Plunker editor. This is useful for local testing.
+    *   `parentEl` - (optional) The string element id or the DOM element in which the embed should be mounted. This is useful for generating dynamic embeds that will be shown on the same page. This option is incompatible with the `target` option.
+    *   `preview` - (optional) A string representing the file that should be loaded in the default preview pane instead of using Plunker's own heuristics.
+    *   `show` - (optional) An array of strings representing panes to show. These strings can be pathnames (or partial pathnames, in which the best fuzzy match will be chosen) or the string `'preview'` to show the preview pane. These panes will be opened in the order of the array from left to right.
+    *   `sidebar` - (optional) The sidebar pane to show by default. Can be the string `'tree'` for the file tree or `'config'` for the configuration pane.
+    *   `target` - (optional) The target frame in which the embed should be displayed. This can be the `name` of an `<iframe>`, for example, or the pseudo-targets `_self` or `_blank`. This option is incompatible with the `parentEl` option.
+
 ### `showDynamicEmbed(projectSpec, options)`
 
 Create an embedded Plunk whose content is dynamically generated and either mount it to a DOM element or open it in a new or existing iframe / window where:
