@@ -26,20 +26,28 @@ export interface ProjectSpecification {
     title?: ProjectTitle;
     tags?: ProjectTag[];
 }
+export interface EditorProjectSpecification extends ProjectSpecification {
+}
 export interface EmbedProjectSpecification extends ProjectSpecification {
     source?: {
         type: string;
         url: string;
     };
 }
-export interface DynamicEmbedOptions {
-    autoCloseSidebar?: boolean;
-    deferRun?: boolean;
-    embedUrl?: string;
+export interface DynamicOptions {
     parentEl?: string | HTMLElement;
     preview?: FilePath;
     show?: (FilePath | PreviewIdentifier)[];
     sidebar?: SidebarKind;
     target?: TargetKind;
 }
+export interface DynamicEditorOptions extends DynamicOptions {
+    editorUrl?: string;
+}
+export interface DynamicEmbedOptions extends DynamicOptions {
+    autoCloseSidebar?: boolean;
+    deferRun?: boolean;
+    embedUrl?: string;
+}
+export declare function showDynamicEditor(projectSpec: EditorProjectSpecification, options?: DynamicEditorOptions): void;
 export declare function showDynamicEmbed(projectSpec: EmbedProjectSpecification, options?: DynamicEmbedOptions): void;

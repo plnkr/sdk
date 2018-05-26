@@ -4,6 +4,7 @@
     (factory((global['@plnkr/sdk'] = {})));
 }(this, (function (exports) { 'use strict';
 
+    const DEFAULT_EDITOR_URL = 'https://next.plnkr.co/edit/';
     const DEFAULT_EMBED_URL = 'https://embed.plnkr.co';
     (function (EncodingKind) {
         EncodingKind["Utf8"] = "utf8";
@@ -94,6 +95,77 @@
             encoding: projectFile.encoding || exports.EncodingKind.Utf8,
         };
     }
+    function showDynamicEditor(projectSpec, options = {}) {
+        if (options.editorUrl && typeof options.editorUrl !== 'string')
+            throw new TypeError('options.editorUrl, if specified, must be a string');
+        if (options.target &&
+            Object.values(exports.TargetKind).indexOf(options.target) === -1)
+            throw new TypeError(`options.target, if specified, must be one of the following values ${Object.values(exports.TargetKind).join(', ')}`);
+        if (options.parentEl &&
+            !(typeof options.parentEl === 'string' ||
+                options.parentEl instanceof HTMLElement))
+            throw new TypeError('options.parentEl, if specified, must be a string or an instance of an HTMLElement');
+        if (options.parentEl && options.target)
+            throw new TypeError('options.parentEl is incompatible with options.target');
+        const projectDef = normalizeProject(projectSpec);
+        const query = buildDynamicEmbedQueryString(options);
+        const form = window.document.createElement('form');
+        const input = window.document.createElement('input');
+        form.style.display = 'none';
+        input.type = 'hidden';
+        const setArrayField = (path, values) => {
+            if (typeof path === 'string')
+                path = path.split('.');
+            path.push('');
+            values.forEach(function (value) {
+                setField(path, value);
+            });
+        };
+        const setField = (path, value) => {
+            if (typeof path === 'string')
+                path = path.split('.');
+            const name = path.shift() + path.map(segment => '[' + segment + ']').join('');
+            input.name = name;
+            input.value = value;
+            form.appendChild(input.cloneNode());
+        };
+        setArrayField('tags', projectDef.tags);
+        setField('title', projectDef.title);
+        for (const file of projectDef.files) {
+            setField(['entries', file.pathname, 'content'], file.content);
+            setField(['entries', file.pathname, 'encoding'], file.encoding);
+        }
+        let target = options.target || '_blank';
+        if (options.parentEl) {
+            const containerEl = typeof options.parentEl === 'string'
+                ? document.getElementById(options.parentEl)
+                : options.parentEl;
+            if (!(containerEl instanceof HTMLElement))
+                throw new Error(`Unable to resolve ${options.parentEl} to an html element`);
+            target = `plnkr-${Math.random()
+            .toString(36)
+            .slice(2)}`;
+            const iframe = document.createElement('iframe');
+            iframe.setAttribute('frameborder', '0');
+            iframe.setAttribute('height', '100%');
+            iframe.setAttribute('name', target);
+            iframe.setAttribute('scrolling', 'no');
+            iframe.setAttribute('width', '100%');
+            iframe.style.minHeight = '250px';
+            iframe.style.overflow = 'hidden';
+            iframe.style.width = '100%';
+            containerEl.appendChild(iframe);
+        }
+        const editorUrl = options.editorUrl
+            ? options.editorUrl.replace(/\/$/, '')
+            : DEFAULT_EDITOR_URL;
+        form.action = `${editorUrl}/${query}`;
+        form.method = 'POST';
+        form.target = target;
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+    }
     function showDynamicEmbed(projectSpec, options = {}) {
         if (typeof projectSpec.source === 'object' &&
             (!projectSpec.source ||
@@ -177,6 +249,7 @@
         document.body.removeChild(form);
     }
 
+    exports.showDynamicEditor = showDynamicEditor;
     exports.showDynamicEmbed = showDynamicEmbed;
 
     Object.defineProperty(exports, '__esModule', { value: true });
