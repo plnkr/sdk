@@ -1,0 +1,46 @@
+{
+    "name": "@plnkr/sdk",
+    "version": "1.0.0-pre.0",
+    "description": "",
+    "main": "dist/index.js",
+    "module": "dist/index.esm.js",
+    "types": "./dist/index.d.ts",
+    "files": ["dist"],
+    "scripts": {
+        "build-declarations": "tsc -d",
+        "build": "npm run build-declarations && rollup -c",
+        "test": "echo 'Tests coming soon to a galaxy near you'",
+        "prebuild": "rm -rf ./dist/*",
+        "pretest": "npm run build",
+        "preversion": "npm run test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/plnkr/sdk.git"
+    },
+    "keywords": [
+        "plnkr",
+        "plunkr",
+        "plunker",
+        "embed",
+        "fiddle",
+        "angular",
+        "angularjs",
+        "react"
+    ],
+    "author": "Geoffrey Goodman",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/plnkr/sdk/issues"
+    },
+    "homepage": "https://github.com/plnkr/sdk#readme",
+    "devDependencies": {
+        "eslint": "^4.19.1",
+        "rollup": "^0.59.3",
+        "rollup-plugin-typescript": "^0.8.1",
+        "tslib": "^1.9.1",
+        "typescript": "^2.8.3",
+        "typescript-eslint-parser": "^15.0.0",
+        "uppercamelcase": "^3.0.0"
+    }
+}
